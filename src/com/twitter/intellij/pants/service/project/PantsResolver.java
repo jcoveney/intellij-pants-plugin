@@ -17,6 +17,7 @@ import com.twitter.intellij.pants.service.scala.ScalaModelData;
 import com.twitter.intellij.pants.settings.PantsExecutionSettings;
 import com.twitter.intellij.pants.util.PantsConstants;
 import com.twitter.intellij.pants.util.PantsUtil;
+import com.twitter.intellij.pants.util.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -208,8 +209,7 @@ public class PantsResolver extends PantsResolverBase {
         contentRootPath
       );
       for (SourceRoot root : targetInfo.roots) {
-        final ExternalSystemSourceType source =
-          targetInfo.test_target ? ExternalSystemSourceType.TEST : ExternalSystemSourceType.SOURCE;
+        final ExternalSystemSourceType source = Utils.getSourceTypeForTargetType(targetInfo.target_type);
         contentRoot.storePath(source, root.source_root, StringUtil.nullize(root.package_prefix));
       }
       moduleDataNode.createChild(ProjectKeys.CONTENT_ROOT, contentRoot);
@@ -239,9 +239,9 @@ public class PantsResolver extends PantsResolverBase {
      */
     public List<SourceRoot> roots;
     /**
-     * Is test target
+     * Target type.
      */
-    public boolean test_target;
+    public String target_type;
   }
 
   public static class SourceRoot {
